@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Rooms;
 
 use App\Models\RoomAvailability;
 use App\Models\Rooms;
+use App\Models\roomsAddedFacilities;
 use App\Orchid\Layouts\Rooms\RoomListLayout;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\ModalToggle;
@@ -110,12 +111,17 @@ class RoomListScreen extends Screen
 
                     Select::make('room.status')
                         ->options([
-                            '0' => 'Close',
-                            '1' => 'Open',
-                            '2' => 'Maintenance',
-                            '3' => 'clening',
-                        ])
-                        ->title('Select tags')
+                                '0' => 'Close',
+                                '1' => 'Open',
+                                '2' => 'Maintenance',
+                                '3' => 'clening',
+                            ])
+                        ->title('Select tags'),
+
+                    Select::make('room.facilities')
+                        ->fromModel(roomsAddedFacilities::class, 'name')
+                        ->multiple()
+                        ->title('Facilities'),
                 ]),
             ])->async('asyncGetData'),
 
@@ -161,12 +167,17 @@ class RoomListScreen extends Screen
 
                     Select::make('room.status')
                         ->options([
-                            '0' => 'Close',
-                            '1' => 'Open',
-                            '2' => 'Maintenance',
-                            '3' => 'clening',
-                        ])
-                        ->title('Select tags')
+                                '0' => 'Close',
+                                '1' => 'Open',
+                                '2' => 'Maintenance',
+                                '3' => 'clening',
+                            ])
+                        ->title('Select tags'),
+
+                    Select::make('room.facilities')
+                        ->fromModel(roomsAddedFacilities::class, 'name')
+                        ->multiple()
+                        ->title('Facilities'),
                 ]),
             ])->async('asyncGetData')
         ];
@@ -174,6 +185,7 @@ class RoomListScreen extends Screen
 
     public function asyncGetData(Rooms $id)
     {
+        $id->load('facilities');
         return [
             'room' => $id,
         ];
@@ -202,6 +214,8 @@ class RoomListScreen extends Screen
         $room->status = $request->input('room.status');
 
         $room->save();
+
+        $room->facilities()->sync($request->input('room.facilities', []));
 
         $roomAvailability = RoomAvailability::firstOrNew(['room_id' => $room->id]);
         $roomAvailability->adults = $room->adults;
@@ -246,6 +260,8 @@ class RoomListScreen extends Screen
 
 
         $room->save();
+
+        $room->facilities()->sync($request->input('room.facilities', []));
 
         $roomAvailability = new RoomAvailability();
         $roomAvailability->room_id = $room->id;

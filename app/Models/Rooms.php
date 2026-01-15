@@ -51,4 +51,9 @@ class Rooms extends Model
         $name = is_array($data) ? ($data[0] ?? null) : $this->image;
         return $name ? asset('images/rooms/' . $name) : 'https://placehold.co/800x600?text=Hotel+Image';
     }
+
+    public function facilities()
+    {
+        return $this->belongsToMany(roomsAddedFacilities::class, 'room_facilities', 'room_id', 'facility_id');
+    }
 }

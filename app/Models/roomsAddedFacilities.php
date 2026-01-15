@@ -38,4 +38,9 @@ class roomsAddedFacilities extends Model
 
         return $addedFacility->price * $count;
     }
+
+    public function rooms()
+    {
+        return $this->belongsToMany(Rooms::class, 'room_facilities', 'facility_id', 'room_id');
+    }
 }

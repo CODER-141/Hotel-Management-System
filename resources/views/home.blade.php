@@ -129,7 +129,7 @@
                                     <img src="{{ $room->image_url }}" class="w-full h-full object-cover">
                                     <div
                                         class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-gray-800">
-                                        {{ $room->size }} m²
+                                        {{ $room->size }} ft²
                                     </div>
                                 </div>
                                 <div class="p-4">

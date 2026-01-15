@@ -9,7 +9,7 @@ class BookingController extends Controller
 {
     public function show($id)
     {
-        $room = Rooms::findOrFail($id);
+        $room = Rooms::with('facilities')->findOrFail($id);
         return view('booking.show', compact('room'));
     }
 

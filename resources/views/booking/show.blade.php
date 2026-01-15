@@ -50,32 +50,22 @@
                         <h3 class="text-sm font-bold text-gray-900 mb-3">Step 1:</h3>
                         <p class="text-sm font-semibold text-gray-900 mb-3">Property amenities</p>
                         <div class="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
-                                </svg>
-                                Free Wifi
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
-                                </svg>
-                                Free parking
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
-                                </svg>
-                                Key card access
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
-                                </svg>
-                                Air conditioning
-                            </div>
+                            @foreach($room->facilities as $facility)
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
+                                    </svg>
+                                    {{ $facility->name }}
+                                    @if($facility->price > 0)
+                                        <span class="text-xs text-gray-400">(${{ $facility->price }})</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                            @if($room->facilities->isEmpty())
+                                <div class="col-span-2 text-gray-400">No specific amenities listed.</div>
+                            @endif
                         </div>
-                        <p class="text-xs text-gray-400 mt-2">Breakfast included</p>
+                        <p class="text-xs text-gray-400 mt-2">Free parking included</p>
                     </div>
 
                     <!-- Bed Option -->
@@ -110,7 +100,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
-                                <input type="tel" name="phone" value="{{ Auth::user()->phone ?? '' }}"
+                                <input type="tel" name="phone" value="{{ Auth::user()->mobile_number ?? '' }}"
                                     placeholder="+23 001 234 567" required
                                     class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                             </div>
@@ -149,7 +139,7 @@
                 <!-- Hotel Details -->
                 <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                     <h2 class="text-xl font-bold text-gray-900 mb-1">Room {{ $room->number }} ***</h2>
-                    <p class="text-sm text-gray-500 mb-4">{{ $room->size }}m² hotel room</p>
+                    <p class="text-sm text-gray-500 mb-4">{{ $room->size }}ft² hotel room</p>
 
                     <div class="space-y-3 mb-4">
                         <div class="flex justify-between text-sm">
@@ -163,7 +153,7 @@
                     </div>
 
                     <div class="border-t border-gray-100 pt-4">
-                        <p class="text-sm font-semibold text-gray-900 mb-2">{{ $room->description }}</p>
+                        <p class="text-sm font-semibold text-gray-900 mb-2">Prices List</p>
 
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between">
@@ -174,26 +164,33 @@
                                 <span class="text-gray-600" id="nights-label">1 night</span>
                                 <span class="font-medium text-gray-900" id="subtotal">${{ $room->price }}</span>
                             </div>
+                            
+                            @if($room->facilities->isNotEmpty())
+                                <div class="border-t border-gray-100 pt-2 mt-2">
+                                    <p class="text-sm font-semibold text-gray-900 mb-2">Facilities</p>
+                                    @foreach($room->facilities as $facility)
+                                        @if($facility->price > 0)
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">{{ $facility->name }}</span>
+                                                <span class="font-medium text-gray-900">${{ $facility->price }}</span>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            
                             @if($room->discount > 0)
                                 <div class="flex justify-between text-green-600">
                                     <span>Discount ({{ $room->discount }}%)</span>
                                     <span id="discount-amount">-$0</span>
                                 </div>
                             @endif
-                            <div class="flex justify-between text-sm pt-2 border-t border-gray-100">
-                                <!-- <span class="text-gray-600">City tax</span>
-                                <span class="font-medium text-gray-900">$10</span> -->
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <!-- <span class="text-gray-600">Service fee</span>
-                                <span class="font-medium text-gray-900">$5</span> -->
-                            </div>
                         </div>
 
                         <div
                             class="flex justify-between text-lg font-bold text-gray-900 mt-4 pt-4 border-t-2 border-gray-200">
                             <span>TOTAL</span>
-                            <span id="total-price">${{ $room->price + 15 }}</span>
+                            <span id="total-price">${{ $room->price + $room->facilities->sum('price') }}</span>
                         </div>
                     </div>
                 </div>
@@ -207,6 +204,7 @@
         const checkoutInput = document.querySelector('input[name="checkout"]');
         const pricePerNight = {{ $room->price }};
         const discount = {{ $room->discount ?? 0 }};
+        const facilitiesTotal = {{ $room->facilities->sum('price') }};
 
         function updatePrices() {
             if (checkinInput.value && checkoutInput.value) {
@@ -227,7 +225,7 @@
                         document.getElementById('discount-amount').textContent = '-$' + discountAmount.toFixed(2);
                     }
 
-                    const total = subtotal - discountAmount + 15; // +15 for taxes and fees
+                    const total = subtotal - discountAmount + facilitiesTotal;
                     document.getElementById('total-price').textContent = '$' + total.toFixed(2);
                 }
             }
