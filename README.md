@@ -5,7 +5,7 @@
 
 A modern, full-featured Hotel & Restaurant Management System built with **Laravel 10** and **TailwindCSS**. This application blends luxury room reservations with an integrated dining experience, featuring a "Tripster" aesthetic design.
 
-## 🌟 Key Features
+## 🌟 Key Features(Still Under Development)
 
 *   🏨 **Room Booking Engine:** Browse available rooms with rich imagery, pricing, and details.
 *   🍽️ **Restaurant & Dining:** Integrated ordering system for room service, dine-in, or take-away.
